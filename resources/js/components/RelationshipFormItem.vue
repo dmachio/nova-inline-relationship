@@ -145,7 +145,13 @@
                                 attrib = key;
                             }
 
-                            formData.append(`${parentAttrib}[${this.id}][${attrib}]`, value);
+                            const arrayIndex = attrib.match(/\[\d+\]/);
+                            if (arrayIndex) {
+                                attrib = attrib.replace(arrayIndex, `]${arrayIndex}`);
+                                formData.append(`${parentAttrib}[${this.id}][${attrib}`, value);
+                            } else {
+                                formData.append(`${parentAttrib}[${this.id}][${attrib}]`, value);
+                            }
                         }
 
                         let parentParts = parentAttrib.split('_');
@@ -165,9 +171,12 @@
                         // ....[values][attribute_name][0]
                         const arrayIndex = attrib.match(/\[\d+\]/);
 
-                        attrib = attrib.replace(arrayIndex, '');
-
-                        formData.append(`${parentAttrib}[${this.id}][values][${attrib}]${arrayIndex}`, value);
+                        if (arrayIndex) {
+                            attrib = attrib.replace(arrayIndex, `]${arrayIndex}`);
+                            formData.append(`${parentAttrib}[${this.id}][values][${attrib}`, value);
+                        } else {
+                            formData.append(`${parentAttrib}[${this.id}][values][${attrib}]${arrayIndex}`, value);
+                        }
                     }
                 );
             },
