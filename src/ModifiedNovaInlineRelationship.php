@@ -24,6 +24,7 @@ use KirschbaumDevelopment\NovaInlineRelationship\Rules\RelationshipRule;
 use Illuminate\Database\Eloquent\Relations\Concerns\SupportsDefaultModels;
 use KirschbaumDevelopment\NovaInlineRelationship\Traits\RequireRelationship;
 use KirschbaumDevelopment\NovaInlineRelationship\Observers\NovaInlineRelationshipObserver;
+use R64\NovaFields\JSON;
 
 class ModifiedNovaInlineRelationship extends Field
 {
@@ -367,6 +368,10 @@ class ModifiedNovaInlineRelationship extends Field
     protected function getResourceField($props, $key): Field
     {
         $attrs = ['name' => $key, 'attribute' => $key];
+
+        if ($props['component'] === JSON::class) {
+            $attrs['fields'] = $props['field']->fields;
+        }
 
         return resolve($props['component'], $attrs);
     }

@@ -150,7 +150,13 @@
                                 attrib = attrib.replace(arrayIndex, `]${arrayIndex}`);
                                 formData.append(`${parentAttrib}[${this.id}][${attrib}`, value);
                             } else {
-                                formData.append(`${parentAttrib}[${this.id}][${attrib}]`, value);
+                                // Workaround for JSON fields whose attrib is in this format:
+                                // attrib[child_attrib]
+                                let attribSuffix = attrib.match(/\[[a-z_]+\]/);
+                                attrib = attribSuffix ? attrib.replace(attribSuffix, '') : attrib;
+                                attribSuffix = attribSuffix && attribSuffix.length > 0 ? attribSuffix[0] : '';
+                                
+                                formData.append(`${parentAttrib}[${this.id}][${attrib}]${attribSuffix}`, value);
                             }
                         }
 
@@ -175,7 +181,13 @@
                             attrib = attrib.replace(arrayIndex, `]${arrayIndex}`);
                             formData.append(`${parentAttrib}[${this.id}][values][${attrib}`, value);
                         } else {
-                            formData.append(`${parentAttrib}[${this.id}][values][${attrib}]${arrayIndex}`, value);
+                            // Workaround for JSON fields whose attrib is in this format:
+                            // attrib[child_attrib]
+                            let attribSuffix = attrib.match(/\[[a-z_]+\]/);
+                            attrib = attribSuffix ? attrib.replace(attribSuffix, '') : attrib;
+                            attribSuffix = attribSuffix && attribSuffix.length > 0 ? attribSuffix[0] : '';
+
+                            formData.append(`${parentAttrib}[${this.id}][values][${attrib}]${attribSuffix}`, value);
                         }
                     }
                 );
